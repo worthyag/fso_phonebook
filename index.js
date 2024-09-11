@@ -44,6 +44,32 @@ app.get("/api/persons/:id", (request, response) => {
     response.status(404).send("Person does not exist!");
 });
 
+const generateId = () =>{
+  const maxId = persons.length > 0 
+    ? Math.floor(Math.random() * 2000)
+    : 0;
+    return String(maxId + 1);
+}
+
+app.post("/api/persons", (request, response) => {
+  const body = request.body;
+
+  if (!request.body) {
+    return response.status(404).json({
+      error: "content missing!"
+    });
+  }
+
+  const person = {
+    "id": generateId(),
+    "name": body.name,
+    "number": body.number
+  };
+
+  persons = persons.concat(person);
+  response.json(person);
+});
+
 app.delete("/api/persons/:id", (request, response) => {
   const id = request.params.id;
   persons = persons.filter(p => p.id !== id);
